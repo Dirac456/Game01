@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dragon Ball API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        input {
+            padding: 10px;
+            font-size: 16px;
+            width: 80px;
+        }
+        button {
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #character-container {
+            margin-top: 20px;
+        }
+        img {
+            width: 200px;
+            height: auto;
+            margin-top: 10px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Consulta de Personajes de Dragon Ball</h1>
+    <input type="number" id="characterId" min="1" required placeholder="Ingresa un ID">
+    <button onclick="fetchCharacter()">Buscar</button>
+    <div id="character-container"></div>
+
+    <script>
+        async function fetchCharacter() {
+            const characterId = document.getElementById("characterId").value;
+            if (!characterId) {
+                alert("Por favor, ingresa un ID válido.");
+                return;
+            }
+
+            const apiUrl = `https://dragonball-api.com/api/characters/${characterId}`;
+
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) {
+                    throw new Error("Personaje no encontrado");
+                }
+
+                const data = await response.json();
+
+                document.getElementById("character-container").innerHTML = `
+                    <h2>${data.name}</h2>
+                    <img src="${data.image}" alt="${data.name}">
+                    <p><strong>Raza:</strong> ${data.race || "Desconocida"}</p>
+                    <p><strong>Género:</strong> ${data.gender || "Desconocido"}</p>
+                    <p><strong>Universo:</strong> ${data.universe || "No especificado"}</p>
+                    <p><strong>Especie:</strong> ${data.species || "No especificado"}</p>
+                `;
+            } catch (error) {
+                document.getElementById("character-container").innerHTML = "<p>Error: Personaje no encontrado</p>";
+            }
+        }
+    </script>
+</body>
+</html>
