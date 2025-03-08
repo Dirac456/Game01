@@ -3,68 +3,135 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dragon Ball API</title>
+    <title>Buscar Personaje</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            margin: 50px;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            margin: auto;
+        }
+        h2 {
+            color: #333;
         }
         input {
-            padding: 10px;
+            padding: 8px;
             font-size: 16px;
             width: 80px;
+            text-align: center;
+            margin: 10px 0;
         }
         button {
-            padding: 10px;
+            padding: 10px 15px;
             font-size: 16px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
             cursor: pointer;
+            transition: 0.3s;
         }
-        #character-container {
-            margin-top: 20px;
+        button:hover {
+            background-color: #0056b3;
         }
-        img {
-            width: 200px;
+        #nombre, #tipo, #poder {
+            font-size: 18px;
+            margin: 10px 0;
+            color: #555;
+        }
+        #imagen {
+            display: none; /* Se mostrará cuando se cargue una imagen */
+            width: 100%;
+            max-width: 200px;
             height: auto;
-            margin-top: 10px;
             border-radius: 10px;
+            margin-top: 10px;
+            display: block;  /* Asegura que la imagen se trate como bloque */
+            margin-left: auto;
+            margin-right: auto; /* Centra horizontalmente */
+        }
+        
+        #mensaje {
+            color: red;
+            font-weight: bold;
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
-    <h1>Consulta de Personajes de Dragon Ball</h1>
-    <input type="number" id="characterId" min="1" required placeholder="Ingresa un ID">
-    <button onclick="fetchCharacter()">Buscar</button>
-    <div id="character-container"></div>
+    <div class="container">
+        <h2>Buscar Personaje</h2>
+        <label for="idInput">ID del personaje:</label>
+        <input type="number" id="idInput" min="1" max="3">
+        <button onclick="buscarPersonaje()">Buscar</button>
+
+        <h3 id="nombre"></h3>
+        <p id="tipo"></p>
+        <p id="poder"></p>
+        <img id="imagen" src="" alt="">
+        <p id="mensaje"></p>
+    </div>
 
     <script>
-        async function fetchCharacter() {
-            const characterId = document.getElementById("characterId").value;
-            if (!characterId) {
-                alert("Por favor, ingresa un ID válido.");
+        async function buscarPersonaje() {
+            const id = document.getElementById("idInput").value;
+            const nombre = document.getElementById("nombre");
+            const tipo = document.getElementById("tipo");
+            const poder = document.getElementById("poder");
+            const imagen = document.getElementById("imagen");
+            const mensaje = document.getElementById("mensaje");
+
+            // Limpiar mensajes anteriores
+            nombre.textContent = "";
+            tipo.textContent = "";
+            poder.textContent = "";
+            imagen.style.display = "none";
+            mensaje.textContent = "";
+
+            if (!id) {
+                mensaje.textContent = "Por favor, ingrese un ID válido.";
                 return;
             }
 
-            const apiUrl = `https://dragonball-api.com/api/characters/${characterId}`;
-
             try {
-                const response = await fetch(apiUrl);
+                const url = `https://izh8lhq5el.execute-api.us-east-1.amazonaws.com/dev2/personaje?ID=${id}`;
+                const response = await fetch(url);
+                
                 if (!response.ok) {
-                    throw new Error("Personaje no encontrado");
+                    throw new Error(`Error: ${response.status} - ${response.statusText}`);
                 }
 
                 const data = await response.json();
 
-                document.getElementById("character-container").innerHTML = `
-                    <h2>${data.name}</h2>
-                    <img src="${data.image}" alt="${data.name}">
-                    <p><strong>Raza:</strong> ${data.race || "Desconocida"}</p>
-                    <p><strong>Género:</strong> ${data.gender || "Desconocido"}</p>
-                    <p><strong>Universo:</strong> ${data.universe || "No especificado"}</p>
-                    <p><strong>Especie:</strong> ${data.species || "No especificado"}</p>
-                `;
+                if (data.message) {
+                    mensaje.textContent = data.message;
+                    return;
+                }
+
+                // ✅ Usar nombres de claves en minúsculas, tal como devuelve la API
+                nombre.textContent = `Nombre: ${data.nombre}`;
+                tipo.textContent = `Tipo: ${data.tipo}`;
+                poder.textContent = `Poder: ${data.poder}`;
+
+                if (data.imagen) {
+                    imagen.src = data.imagen;
+                    imagen.alt = `Imagen de ${data.nombre}`;
+                    imagen.style.display = "block";
+                } else {
+                    mensaje.textContent = "Imagen no disponible.";
+                }
             } catch (error) {
-                document.getElementById("character-container").innerHTML = "<p>Error: Personaje no encontrado</p>";
+                mensaje.textContent = "No se pudo obtener la información del personaje.";
+                console.error("Error en la solicitud:", error);
             }
         }
     </script>
