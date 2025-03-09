@@ -1,0 +1,94 @@
+/* Estilos generales */
+body {
+    background-image: url('../imagenes/fondo.jpg');
+    background-size: cover;
+    background-position: center;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    color: white;
+}
+
+/* Contenedor principal */
+.container {
+    padding: 20px;
+}
+
+/* Título */
+.title {
+    font-size: 36px;
+    margin-bottom: 20px;
+}
+
+/* Tablero de juego */
+.game-board {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 900px;
+    margin: auto;
+}
+
+/* Sección de jugadores */
+.player-section {
+    width: 30%;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 15px;
+    border-radius: 10px;
+}
+
+/* Botones */
+button {
+    background: #ff9900;
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    margin-top: 10px;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+button:hover {
+    background: #cc7a00;
+}
+
+/* Tarjetas de personajes */
+.characters {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.character-card {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 10px;
+    margin: 5px;
+    border-radius: 5px;
+    width: 90%;
+    display: flex;
+    align-items: center;
+}
+
+.character-card img {
+    width: 50px;
+    height: 50px;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+/* Zona de batalla */
+.battle-zone {
+    width: 30%;
+    background: rgba(50, 50, 50, 0.8);
+    padding: 15px;
+    border-radius: 10px;
+}
+
+/* Mensajes de selección */
+.winner {
+    color: #00ff00;
+}
+
+.loser {
+    color: #ff0000;
+}
