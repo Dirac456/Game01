@@ -8,34 +8,37 @@
     <link rel="icon" href="imagenes/icono.png">
 </head>
 <body>
+    <h1>Game 01</h1>
     <div class="container">
-        <h1 class="title">Game 01</h1>
+        <!-- Player 1 -->
+        <div class="player-section">
+            <h2>Player 1</h2>
+            <button onclick="obtenerPersonajes('player1')">Generar Personajes</button>
+            <div id="player1-options" class="characters-container"></div>
+            <button onclick="elegirPersonaje('player1')">Elegir Personaje</button>
+            <p id="player1-message"></p>
+        </div>
 
-        <div class="game-board">
-            <!-- Player 1 -->
-            <div class="player-section">
-                <h2>Player 1</h2>
-                <button onclick="fetchCharacters('player1')">Generar 5 personajes</button>
-                <div class="characters" id="player1-characters"></div>
-                <button onclick="selectCharacter('player1')">Elegir personaje</button>
-                <p id="player1-message"></p>
+        <!-- Zona de Batalla -->
+        <div class="battle-zone">
+            <div class="battle-info">
+                <img id="player1-battle-img" class="character-img-large" src="" alt="Player 1">
+                <p id="player1-battle-info"></p>
             </div>
+            <img class="vs-image" src="imagenes/vs.png" alt="VS">
+            <div class="battle-info">
+                <img id="player2-battle-img" class="character-img-large" src="" alt="Player 2">
+                <p id="player2-battle-info"></p>
+            </div>
+        </div>
 
-            <!-- Zona central donde se comparan los personajes -->
-            <div class="battle-zone">
-                <h2>Batalla</h2>
-                <div class="selected-character" id="player1-selected"></div>
-                <div class="selected-character" id="player2-selected"></div>
-            </div>
-
-            <!-- Player 2 -->
-            <div class="player-section">
-                <h2>Player 2</h2>
-                <button onclick="fetchCharacters('player2')">Generar 5 personajes</button>
-                <div class="characters" id="player2-characters"></div>
-                <button onclick="selectCharacter('player2')">Elegir personaje</button>
-                <p id="player2-message"></p>
-            </div>
+        <!-- Player 2 -->
+        <div class="player-section">
+            <h2>Player 2</h2>
+            <button onclick="obtenerPersonajes('player2')">Generar Personajes</button>
+            <div id="player2-options" class="characters-container"></div>
+            <button onclick="elegirPersonaje('player2')">Elegir Personaje</button>
+            <p id="player2-message"></p>
         </div>
     </div>
 

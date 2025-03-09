@@ -1,85 +1,149 @@
 const API_URL = "https://izh8lhq5el.execute-api.us-east-1.amazonaws.com/dev2/personajes-aleatorios";
 
-let selectedCharacters = {
-    player1: null,
-    player2: null
-};
+let player1Personajes = []; // Almacena la lista de personajes generados para Player 1
+let player2Personajes = []; // Almacena la lista de personajes generados para Player 2
 
-// Función para obtener 5 personajes aleatorios
-async function fetchCharacters(player) {
+let player1Seleccionado = null;
+let player2Seleccionado = null;
+
+async function obtenerPersonajes(player) {
     try {
         const response = await fetch(API_URL);
-        const characters = await response.json();
+        const personajes = await response.json();
 
-        // Mostrar personajes en la interfaz
-        const container = document.getElementById(`${player}-characters`);
-        container.innerHTML = "";
+        if (player === "player1") {
+            player1Personajes = personajes; // Guardamos la lista de personajes de Player 1
+        } else {
+            player2Personajes = personajes; // Guardamos la lista de personajes de Player 2
+        }
 
-        characters.forEach(character => {
-            const card = document.createElement("div");
-            card.classList.add("character-card");
-            card.innerHTML = `
-                <input type="radio" name="${player}-selection" value='${JSON.stringify(character)}'>
-                <img src="${character.imagen}" alt="${character.nombre}">
-                <div>
-                    <p><strong>${character.nombre}</strong></p>
-                    <p>Tipo: ${character.tipo}</p>
-                    <p>Poder: ${character.poder}</p>
-                </div>
-            `;
-            container.appendChild(card);
-        });
-
+        mostrarOpciones(player, personajes);
     } catch (error) {
         console.error("Error obteniendo personajes:", error);
     }
 }
 
-// Función para seleccionar un personaje
-function selectCharacter(player) {
-    const selectedOption = document.querySelector(`input[name="${player}-selection"]:checked`);
+function mostrarOpciones(player, personajes) {
+    const container = document.getElementById(`${player}-options`);
+    container.innerHTML = "";
 
-    if (selectedOption) {
-        selectedCharacters[player] = JSON.parse(selectedOption.value);
-        document.getElementById(`${player}-message`).textContent = "Personaje elegido ✔";
-        
-        // Si ambos jugadores han elegido, mostrar batalla
-        if (selectedCharacters.player1 && selectedCharacters.player2) {
-            showBattle();
-        }
-    } else {
-        alert("Debes seleccionar un personaje.");
-    }
-}
+    personajes.forEach((personaje, index) => {
+        const card = document.createElement("div");
+        card.classList.add("character-card");
 
-// Función para mostrar la batalla
-function showBattle() {
-    const player1Container = document.getElementById("player1-selected");
-    const player2Container = document.getElementById("player2-selected");
-
-    player1Container.innerHTML = generateCharacterCard(selectedCharacters.player1);
-    player2Container.innerHTML = generateCharacterCard(selectedCharacters.player2);
-
-    // Comparar poderes
-    if (selectedCharacters.player1.poder > selectedCharacters.player2.poder) {
-        player1Container.classList.add("winner");
-        player2Container.classList.add("loser");
-    } else if (selectedCharacters.player1.poder < selectedCharacters.player2.poder) {
-        player1Container.classList.add("loser");
-        player2Container.classList.add("winner");
-    }
-}
-
-// Función para generar la tarjeta de personaje
-function generateCharacterCard(character) {
-    return `
-        <div class="character-card">
-            <img src="${character.imagen}" alt="${character.nombre}">
+        card.innerHTML = `
+            <input type="radio" name="${player}-selection" value="${index}">
+            <img src="${personaje.imagen}" class="character-img-small" alt="${personaje.nombre}">
             <div>
-                <h3>${character.nombre}</h3>
-                <p>Tipo: ${character.tipo}</p>
-                <p>Poder: ${character.poder}</p>
+                <p><strong>${personaje.nombre}</strong></p>
+                <p>Tipo: ${personaje.tipo}</p>
+                <p>Poder: ${personaje.poder}</p>
             </div>
-        </div>
-    `;
+        `;
+
+        container.appendChild(card);
+    });
+}
+
+function elegirPersonaje(player) {
+    const radios = document.getElementsByName(`${player}-selection`);
+    let selectedIndex = -1;
+
+    radios.forEach((radio, index) => {
+        if (radio.checked) {
+            selectedIndex = index;
+        }
+    });
+
+    if (selectedIndex === -1) {
+        alert("Selecciona un personaje primero");
+        return;
+    }
+
+    if (player === "player1") {
+        player1Seleccionado = player1Personajes[selectedIndex]; // Tomamos el personaje desde la lista guardada
+        document.getElementById("player1-message").textContent = "Personaje elegido";
+    } else {
+        player2Seleccionado = player2Personajes[selectedIndex]; // Tomamos el personaje desde la lista guardada
+        document.getElementById("player2-message").textContent = "Personaje elegido";
+    }
+
+    mostrarZonaBatalla();
+}
+
+function mostrarZonaBatalla() {
+    if (player1Seleccionado && player2Seleccionado) {
+        document.getElementById("player1-battle-img").src = player1Seleccionado.imagen;
+        document.getElementById("player2-battle-img").src = player2Seleccionado.imagen;
+
+        document.getElementById("player1-battle-info").innerHTML = `
+            <strong>${player1Seleccionado.nombre}</strong><br>
+            Tipo: ${player1Seleccionado.tipo}<br>
+            Poder: ${player1Seleccionado.poder}
+        `;
+
+        document.getElementById("player2-battle-info").innerHTML = `
+            <strong>${player2Seleccionado.nombre}</strong><br>
+            Tipo: ${player2Seleccionado.tipo}<br>
+            Poder: ${player2Seleccionado.poder}
+        `;
+
+        compararPoder();
+    }
+}
+
+function compararPoder() {
+    const player1Poder = player1Seleccionado.poder;
+    const player2Poder = player2Seleccionado.poder;
+
+    // Obtener los contenedores de batalla
+    const player1BattleInfo = document.getElementById("player1-battle-info").parentElement;
+    const player2BattleInfo = document.getElementById("player2-battle-info").parentElement;
+
+    // Limpiar etiquetas previas antes de agregar nuevas
+    document.querySelectorAll(".status-label").forEach(label => label.remove());
+
+    if (player1Poder > player2Poder) {
+        document.getElementById("player1-battle-img").style.border = "8px solid green";
+        document.getElementById("player2-battle-img").style.border = "8px solid red";
+
+        // Crear etiquetas y agregarlas
+        const winnerLabel = document.createElement("div");
+        winnerLabel.className = "status-label winner-label";
+        winnerLabel.textContent = "WINNER";
+        player1BattleInfo.appendChild(winnerLabel);
+
+        const loserLabel = document.createElement("div");
+        loserLabel.className = "status-label loser-label";
+        loserLabel.textContent = "LOSER";
+        player2BattleInfo.appendChild(loserLabel);
+
+    } else if (player1Poder < player2Poder) {
+        document.getElementById("player1-battle-img").style.border = "8px solid red";
+        document.getElementById("player2-battle-img").style.border = "8px solid green";
+
+        const winnerLabel = document.createElement("div");
+        winnerLabel.className = "status-label winner-label";
+        winnerLabel.textContent = "WINNER";
+        player2BattleInfo.appendChild(winnerLabel);
+
+        const loserLabel = document.createElement("div");
+        loserLabel.className = "status-label loser-label";
+        loserLabel.textContent = "LOSER";
+        player1BattleInfo.appendChild(loserLabel);
+        
+    } else {
+        document.getElementById("player1-battle-img").style.border = "8px solid yellow";
+        document.getElementById("player2-battle-img").style.border = "8px solid yellow";
+
+        const drawLabel1 = document.createElement("div");
+        drawLabel1.className = "status-label draw-label";
+        drawLabel1.textContent = "DRAW";
+        player1BattleInfo.appendChild(drawLabel1);
+
+        const drawLabel2 = document.createElement("div");
+        drawLabel2.className = "status-label draw-label";
+        drawLabel2.textContent = "DRAW";
+        player2BattleInfo.appendChild(drawLabel2);
+    }
 }

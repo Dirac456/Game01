@@ -1,94 +1,132 @@
-/* Estilos generales */
 body {
-    background-image: url('../imagenes/fondo.jpg');
-    background-size: cover;
-    background-position: center;
     font-family: Arial, sans-serif;
     text-align: center;
+    background-image: url("../imagenes/fondo.jpg");
+    background-size: cover;
+    background-position: center;
     color: white;
 }
 
-/* Contenedor principal */
-.container {
-    padding: 20px;
-}
-
-/* Título */
-.title {
-    font-size: 36px;
+h1 {
     margin-bottom: 20px;
 }
 
-/* Tablero de juego */
-.game-board {
+.container {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
-    max-width: 900px;
-    margin: auto;
+    gap: 20px;
 }
 
-/* Sección de jugadores */
 .player-section {
-    width: 30%;
     background: rgba(0, 0, 0, 0.7);
     padding: 15px;
     border-radius: 10px;
+    width: 20%;
 }
 
-/* Botones */
-button {
-    background: #ff9900;
-    color: white;
-    padding: 10px;
-    border: none;
-    cursor: pointer;
+.characters-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
     margin-top: 10px;
+}
+
+.character-card {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 5px;
     border-radius: 5px;
-    font-size: 14px;
+    width: 100%;
+    gap: 10px;
+}
+
+.character-card input[type="radio"] {
+    margin-left: 10px;
+    transform: scale(1.2);
+}
+
+.character-img-small {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    object-position: top;
+    border-radius: 10px;
+}
+
+.battle-zone {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+.battle-info {
+    text-align: center;
+}
+
+.character-img-large {
+    width: 300px;
+    height: 450px;
+    object-fit: cover;
+    object-position: top;
+    border-radius: 15px;
+}
+
+.vs-image {
+    width: 200px;
+    height: 200px;
+}
+
+button {
+    background-color: #ff9900;
+    color: white;
+    border: none;
+    padding: 10px;
+    margin-top: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background 0.3s;
 }
 
 button:hover {
-    background: #cc7a00;
+    background-color: #3700b3;
 }
 
-/* Tarjetas de personajes */
-.characters {
+
+.battle-info {
+    position: relative; /* Permite que los elementos internos se posicionen con absolute */
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.character-card {
-    background: rgba(255, 255, 255, 0.2);
-    padding: 10px;
-    margin: 5px;
+.status-label {
+    position: absolute;
+    top: -30px; /* Coloca el texto por encima de la imagen */
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 20px;
+    font-weight: bold;
+    padding: 5px 15px;
     border-radius: 5px;
-    width: 90%;
-    display: flex;
-    align-items: center;
+    text-align: center;
 }
 
-.character-card img {
-    width: 50px;
-    height: 50px;
-    border-radius: 5px;
-    margin-right: 10px;
+.winner-label {
+    color: white;
+    background-color: green;
 }
 
-/* Zona de batalla */
-.battle-zone {
-    width: 30%;
-    background: rgba(50, 50, 50, 0.8);
-    padding: 15px;
-    border-radius: 10px;
+.loser-label {
+    color: white;
+    background-color: red;
 }
 
-/* Mensajes de selección */
-.winner {
-    color: #00ff00;
+.draw-label {
+    color: black;
+    background-color: yellow;
 }
 
-.loser {
-    color: #ff0000;
-}
